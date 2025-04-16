@@ -110,17 +110,22 @@ class MixingSimulator {
     }
     
     simulateRecipe(baseDrug, ingredients) {
-        // Start with the base drug effect
-        const baseDrugData = this.baseDrugs.find(d => d.name === baseDrug);
-        if (!baseDrugData) return null;
-        
-        let currentEffects = [baseDrugData.effect];
-        let steps = [{
-            step: 0,
-            ingredient: "Base Drug",
-            effects: [...currentEffects],
-            transformations: []
-        }];
+    // Start with the base drug effect
+    const baseDrugData = this.baseDrugs.find(d => d.name === baseDrug);
+    if (!baseDrugData) return null;
+    
+    // Initialize current effects, but ignore "None"
+    let currentEffects = [];
+    if (baseDrugData.effect !== "None") {
+        currentEffects = [baseDrugData.effect];
+    }
+    
+    let steps = [{
+        step: 0,
+        ingredient: "Base Drug",
+        effects: [...currentEffects],
+        transformations: []
+    }];
         
         // Process each ingredient
         for (let i = 0; i < ingredients.length; i++) {
