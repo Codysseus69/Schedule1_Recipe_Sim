@@ -178,7 +178,7 @@ function displayCurrentEffects(effects) {
         });
     }
     
-}
+},
 
 // Function to create and show the interactions popup
 function showInteractionsPopup() {
