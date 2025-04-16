@@ -93,7 +93,7 @@ const gameData = {
         { ingredient: "Addy", replaces: "Explosive", creates: "Euphoric" },
         
         // Explosive transformations
-        { ingredient: "Donut", replaces: "Calorie-Dense must already be in the mix and Explosive not", creates: "Explosive" },
+        { ingredient: "Donut", replaces: "Calorie-Dense", creates: "Explosive" },
         
         // Focused transformations
         { ingredient: "Banana", replaces: "Disorienting", creates: "Focused" },
