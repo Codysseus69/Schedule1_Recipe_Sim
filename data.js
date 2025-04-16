@@ -6,7 +6,7 @@ const gameData = {
         { name: "Green Crack", effect: "Energizing" },
         { name: "Granddaddy Purple", effect: "Sedating" },
         { name: "Meth", effect: "None" },
-        { name: "Cocaine", effect: "Not yet acquired" }
+        { name: "Cocaine", effect: "None" }
     ],
     
     ingredientEffects: [
