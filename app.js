@@ -68,6 +68,108 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update the simulation to reflect the cleared state
         updateSimulation();
     });
+    
+    // Function to create and show the interactions popup
+function showInteractionsPopup() {
+    // Create popup container
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    
+    const content = document.createElement('div');
+    content.className = 'popup-content';
+    
+    // Add close button
+    const closeButton = document.createElement('button');
+    closeButton.className = 'close-popup';
+    closeButton.innerHTML = '&times;';
+    closeButton.addEventListener('click', function() {
+        document.body.removeChild(overlay);
+    });
+    
+    // Add title
+    const title = document.createElement('h2');
+    title.textContent = 'Ingredient-Effect Interactions';
+    
+    // Add search box
+    const searchBox = document.createElement('input');
+    searchBox.type = 'text';
+    searchBox.className = 'search-box';
+    searchBox.placeholder = 'Search interactions...';
+    
+    // Create table
+    const table = document.createElement('table');
+    table.className = 'interactions-table';
+    
+    // Add table headers
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    const headers = ['Ingredient', 'Replaces Effect', 'Creates Effect'];
+    
+    headers.forEach(headerText => {
+        const th = document.createElement('th');
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+    });
+    
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+    
+    // Add table body
+    const tbody = document.createElement('tbody');
+    
+    // Add all interactions based on your actual data structure
+    gameData.interactions.forEach(interaction => {
+        const row = document.createElement('tr');
+        
+        const ingredientCell = document.createElement('td');
+        ingredientCell.textContent = interaction["REQUIRED INGREDIENT "];
+        
+        const replacesCell = document.createElement('td');
+        replacesCell.textContent = interaction["EFFECT TO BE REPLACED"];
+        
+        const createsCell = document.createElement('td');
+        createsCell.textContent = interaction["DESIRED EFFECT"];
+        
+        row.appendChild(ingredientCell);
+        row.appendChild(replacesCell);
+        row.appendChild(createsCell);
+        
+        tbody.appendChild(row);
+    });
+    
+    table.appendChild(tbody);
+    
+    // Add search functionality
+    searchBox.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = tbody.getElementsByTagName('tr');
+        
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const cells = row.getElementsByTagName('td');
+            let found = false;
+            
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j].textContent.toLowerCase().includes(searchTerm)) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            row.style.display = found ? '' : 'none';
+        }
+    });
+    
+    // Assemble the popup
+    content.appendChild(closeButton);
+    content.appendChild(title);
+    content.appendChild(searchBox);
+    content.appendChild(table);
+    overlay.appendChild(content);
+    
+    // Add to the document
+    document.body.appendChild(overlay);
+}
 
        // Add interactions popup functionality
     const showInteractionsButton = document.getElementById('show-interactions');
@@ -178,106 +280,6 @@ function displayCurrentEffects(effects) {
         });
     }
     
-},
-
-// Function to create and show the interactions popup
-function showInteractionsPopup() {
-    // Create popup container
-    const overlay = document.createElement('div');
-    overlay.className = 'popup-overlay';
-    
-    const content = document.createElement('div');
-    content.className = 'popup-content';
-    
-    // Add close button
-    const closeButton = document.createElement('button');
-    closeButton.className = 'close-popup';
-    closeButton.innerHTML = '&times;';
-    closeButton.addEventListener('click', function() {
-        document.body.removeChild(overlay);
-    });
-    
-    // Add title
-    const title = document.createElement('h2');
-    title.textContent = 'Ingredient-Effect Interactions';
-    
-    // Add search box
-    const searchBox = document.createElement('input');
-    searchBox.type = 'text';
-    searchBox.className = 'search-box';
-    searchBox.placeholder = 'Search interactions...';
-    
-    // Create table
-    const table = document.createElement('table');
-    table.className = 'interactions-table';
-    
-    // Add table headers
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    const headers = ['Ingredient', 'Replaces Effect', 'Creates Effect'];
-    
-    headers.forEach(headerText => {
-        const th = document.createElement('th');
-        th.textContent = headerText;
-        headerRow.appendChild(th);
-    });
-    
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-    
-    // Add table body
-    const tbody = document.createElement('tbody');
-    
-    // Add all interactions based on your actual data structure
-    gameData.interactions.forEach(interaction => {
-        const row = document.createElement('tr');
-        
-        const ingredientCell = document.createElement('td');
-        ingredientCell.textContent = interaction["REQUIRED INGREDIENT "];
-        
-        const replacesCell = document.createElement('td');
-        replacesCell.textContent = interaction["EFFECT TO BE REPLACED"];
-        
-        const createsCell = document.createElement('td');
-        createsCell.textContent = interaction["DESIRED EFFECT"];
-        
-        row.appendChild(ingredientCell);
-        row.appendChild(replacesCell);
-        row.appendChild(createsCell);
-        
-        tbody.appendChild(row);
-    });
-    
-    table.appendChild(tbody);
-    
-    // Add search functionality
-    searchBox.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const rows = tbody.getElementsByTagName('tr');
-        
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            const cells = row.getElementsByTagName('td');
-            let found = false;
-            
-            for (let j = 0; j < cells.length; j++) {
-                if (cells[j].textContent.toLowerCase().includes(searchTerm)) {
-                    found = true;
-                    break;
-                }
-            }
-            
-            row.style.display = found ? '' : 'none';
-        }
-    });
-    
-    // Assemble the popup
-    content.appendChild(closeButton);
-    content.appendChild(title);
-    content.appendChild(searchBox);
-    content.appendChild(table);
-    overlay.appendChild(content);
-    
-    // Add to the document
-    document.body.appendChild(overlay);
 });
+
+
