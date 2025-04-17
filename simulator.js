@@ -13,7 +13,7 @@ class MixingSimulator {
     let newEffects = [...currentEffects];
     let transformations = [];
     
-    // First, identify all transformations without applying them
+    // First, identify all potential transformations without applying them
     let pendingTransformations = [];
     for (let i = 0; i < initialEffects.length; i++) {
         const effect = initialEffects[i];
@@ -37,8 +37,32 @@ class MixingSimulator {
         }
         
         // Check for conditional matches
-        // (existing conditional code remains the same)
-        ...
+        for (const interaction of this.interactions) {
+            if (interaction.ingredient !== ingredient) continue;
+            
+            // Check if it's a conditional replacement (contains parentheses)
+            if (!interaction.replaces.startsWith(effect + " (")) continue;
+            
+            // Extract the condition
+            const condition = interaction.replaces.substring(
+                effect.length + 1,
+                interaction.replaces.length - 1
+            ).trim();
+            
+            // Check if condition is met based on initial effects
+            if (this.checkCondition(condition, initialEffects)) {
+                // Only add the transformation if the target effect is not already present
+                if (!initialEffects.includes(interaction.creates)) {
+                    pendingTransformations.push({
+                        index: i,
+                        from: effect,
+                        to: interaction.creates,
+                        condition: condition
+                    });
+                }
+                break;
+            }
+        }
     }
     
     // Now apply all transformations
@@ -51,8 +75,7 @@ class MixingSimulator {
         });
     });
     
-    // Add the base effect of the ingredient if under limit
-    // This is moved AFTER transformations so it doesn't get transformed immediately
+    // Add the base effect of the ingredient AFTER transformations
     const ingredientData = this.ingredientEffects.find(i => i.name === ingredient);
     if (ingredientData && newEffects.length < this.effectLimit) {
         // Only add if the effect isn't already in the list
@@ -61,7 +84,7 @@ class MixingSimulator {
         }
     }
     
-    // Remove duplicate effects
+    // Remove duplicate effects by converting to a Set and back to an array
     newEffects = [...new Set(newEffects)];
     
     return {
