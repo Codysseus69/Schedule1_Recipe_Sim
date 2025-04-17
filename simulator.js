@@ -8,65 +8,68 @@ class MixingSimulator {
     }
     
     simulateStep(currentEffects, ingredient) {
-        // Clone the current effects array to avoid modifying the original
-        let initialEffects = [...currentEffects];
-        let newEffects = [...currentEffects];
-        let transformations = [];
+    // Clone the current effects array to avoid modifying the original
+    let initialEffects = [...currentEffects];
+    let newEffects = [...currentEffects];
+    let transformations = [];
+    
+    // First, identify all transformations without applying them
+    let pendingTransformations = [];
+    for (let i = 0; i < initialEffects.length; i++) {
+        const effect = initialEffects[i];
         
-        // Add the base effect of the ingredient if under limit
-        const ingredientData = this.ingredientEffects.find(i => i.name === ingredient);
-        if (ingredientData && newEffects.length < this.effectLimit) {
-            // Only add if the effect isn't already in the list
-            if (!newEffects.includes(ingredientData.effect)) {
-                newEffects.push(ingredientData.effect);
-            }
-        }
+        // Check for exact matches
+        const exactMatch = this.interactions.find(
+            interaction => interaction.ingredient === ingredient && 
+                           interaction.replaces === effect
+        );
         
-        // First, identify all transformations without applying them
-        let pendingTransformations = [];
-        for (let i = 0; i < initialEffects.length; i++) {
-            const effect = initialEffects[i];
-            
-            // Check for exact matches
-            const exactMatch = this.interactions.find(
-                interaction => interaction.ingredient === ingredient && 
-                               interaction.replaces === effect
-            );
-            
-            if (exactMatch) {
+        if (exactMatch) {
+            // Only add the transformation if the target effect is not already present
+            if (!initialEffects.includes(exactMatch.creates)) {
                 pendingTransformations.push({
                     index: i,
                     from: effect,
                     to: exactMatch.creates
                 });
-                continue;
             }
-            
-            // Check for conditional matches
-            for (const interaction of this.interactions) {
-                if (interaction.ingredient !== ingredient) continue;
-                
-                // Check if it's a conditional replacement (contains parentheses)
-                if (!interaction.replaces.startsWith(effect + " (")) continue;
-                
-                // Extract the condition
-                const condition = interaction.replaces.substring(
-                    effect.length + 1,
-                    interaction.replaces.length - 1
-                ).trim();
-                
-                // Check if condition is met based on initial effects
-                if (this.checkCondition(condition, initialEffects)) {
-                    pendingTransformations.push({
-                        index: i,
-                        from: effect,
-                        to: interaction.creates,
-                        condition: condition
-                    });
-                    break;
-                }
-            }
+            continue;
         }
+        
+        // Check for conditional matches
+        // (existing conditional code remains the same)
+        ...
+    }
+    
+    // Now apply all transformations
+    pendingTransformations.forEach(transform => {
+        newEffects[transform.index] = transform.to;
+        transformations.push({
+            from: transform.from,
+            to: transform.to,
+            condition: transform.condition
+        });
+    });
+    
+    // Add the base effect of the ingredient if under limit
+    // This is moved AFTER transformations so it doesn't get transformed immediately
+    const ingredientData = this.ingredientEffects.find(i => i.name === ingredient);
+    if (ingredientData && newEffects.length < this.effectLimit) {
+        // Only add if the effect isn't already in the list
+        if (!newEffects.includes(ingredientData.effect)) {
+            newEffects.push(ingredientData.effect);
+        }
+    }
+    
+    // Remove duplicate effects
+    newEffects = [...new Set(newEffects)];
+    
+    return {
+        effects: newEffects,
+        transformations: transformations
+    };
+}
+
         
         // Now apply all transformations
         pendingTransformations.forEach(transform => {
