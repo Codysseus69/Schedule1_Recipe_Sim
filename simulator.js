@@ -91,27 +91,11 @@ class MixingSimulator {
         effects: newEffects,
         transformations: transformations
     };
+
 }
 
         
-        // Now apply all transformations
-        pendingTransformations.forEach(transform => {
-            newEffects[transform.index] = transform.to;
-            transformations.push({
-                from: transform.from,
-                to: transform.to,
-                condition: transform.condition
-            });
-        });
-        
-        // Remove duplicate effects by converting to a Set and back to an array
-        newEffects = [...new Set(newEffects)];
-        
-        return {
-            effects: newEffects,
-            transformations: transformations
-        };
-    }
+     
     
     checkCondition(condition, effects) {
         // Handle conditions like "X isn't already in the mix"
