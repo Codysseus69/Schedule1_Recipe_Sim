@@ -122,7 +122,7 @@ function showInteractionsPopup() {
         const row = document.createElement('tr');
         
         const ingredientCell = document.createElement('td');
-        ingredientCell.textContent = interaction["ingerdient"];
+        ingredientCell.textContent = interaction["ingredient"];
         
         const replacesCell = document.createElement('td');
         replacesCell.textContent = interaction["replaces"];
